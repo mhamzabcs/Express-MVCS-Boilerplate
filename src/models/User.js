@@ -1,27 +1,33 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const tables = require('./index').collectionNames;
-
-
+let letter = /[a-zA-Z]/;
+let number = /[0-9]/;
 
 const UserSchema = mongoose.Schema({
     name: {
         type: String,
-        required: true
-    },
-    username: {
-        type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
-        hide: true
+        required: true,
+        validate: {
+            validator: function(v) {
+                let valid = number.test(v) && letter.test(v);
+                return v.length >= 8 && (number.test(v) && letter.test(v))
+            },
+            message: props => `Password must have 8 letters and should be alphanumeric`
+        },
     },
-    imageUrl: {
-        type: String
+    bio: {
+        type: String,
+        default: null
     }
 });
 
@@ -32,8 +38,5 @@ module.exports.comparePassword = function(candidatePassword, hash) {
 }
 
 module.exports.hashPassword = function(password) {
-    if (validatePassword(password)) {
-        return bcrypt.hash(password, 10);
-    }
-    return Promise.reject('Password invalid')
+    return bcrypt.hash(password, 10);
 }

@@ -1,4 +1,5 @@
-const UserService = require('../services/UserService');
+const UserService = require('../services/UserService'),
+    validation = require('../util/validation');
 
 module.exports = {
     index(req, res) {
@@ -7,11 +8,14 @@ module.exports = {
     onSignUp(req, res) {
         UserService.add(req.body)
             .then(resp => {
-                res.status(200).json({ message: resp })
+                res.status(200).json({ data: resp })
             })
             .catch(err => {
-                console.log(err)
-                res.status(400);
+                if (err.errors) {
+                    res.status(400).json({ error: validation(err.errors) })
+                } else if (err.message) {
+                    res.status(400).json({ error: err.message })
+                } else { res.status(400); }
             })
     },
     onLoginSuccess(req, res) {
