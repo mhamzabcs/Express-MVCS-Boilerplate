@@ -5,4 +5,7 @@ const express = require('express'),
 
 router.post('/', UserController.onSignUp);
 
+router.put('/:userId', UserController.onUpdate);
+
+
 module.exports = router;

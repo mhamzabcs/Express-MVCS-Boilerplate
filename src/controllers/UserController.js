@@ -18,6 +18,13 @@ module.exports = {
                 } else { res.status(400); }
             })
     },
+    onUpdate(req, res) {
+        UserService.update(req.params.userId, req.body)
+            .then(resp => {
+                console.log(resp)
+            })
+            .catch(err => console.log(err))
+    },
     onLoginSuccess(req, res) {
         // after successfull authentication from passport strategy.
         // return user data or whatever you want.
